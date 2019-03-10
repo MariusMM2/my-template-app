@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import com.marius.mytemplate.R;
 
-//A template Activity consisting of one fragment
+//An Activity consisting of one fragment
 public abstract class SingleFragmentActivity extends ThemedSwitchActivity {
     protected abstract Fragment createFragment();
 
