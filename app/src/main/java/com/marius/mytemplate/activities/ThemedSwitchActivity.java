@@ -1,6 +1,5 @@
 package com.marius.mytemplate.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,16 +12,12 @@ import com.marius.mytemplate.R;
 import com.marius.mytemplate.Settings;
 
 //An Activity with a day/night switch in the menu
-@SuppressLint("Registered")
-public class ThemedSwitchActivity extends AppCompatActivity {
+public abstract class ThemedSwitchActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
-    private boolean mDarkMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        mDarkMode = Settings.getInstance(this).darkMode;
-        setTheme(mDarkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
         super.onCreate(savedInstanceState);
     }
 
@@ -35,9 +30,6 @@ public class ThemedSwitchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mDarkMode != Settings.getInstance(this).darkMode) {
-            recreate();
-        }
     }
 
     @Override
@@ -46,7 +38,7 @@ public class ThemedSwitchActivity extends AppCompatActivity {
         inflater.inflate(R.menu.daynight_menu, menu);
 
         DayNightSwitch dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
-        dayNightSwitch.setIsNight(mDarkMode);
+        dayNightSwitch.setIsNight(Settings.getInstance(this).nightMode);
         dayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
             @Override
             public void onAnimStart() {
@@ -69,7 +61,10 @@ public class ThemedSwitchActivity extends AppCompatActivity {
 
             }
         });
-        dayNightSwitch.setListener(isNight -> Settings.getInstance(this).darkMode = isNight);
+        dayNightSwitch.setListener(isNight -> {
+            Settings.getInstance(this).nightMode = isNight;
+            Settings.getInstance(this).refreshTheme();
+        });
 
         return true;
     }
